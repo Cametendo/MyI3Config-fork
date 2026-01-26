@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
 set -e
 
+# ----------------------------
+# MyI3Config Installer
+# ----------------------------
+
 # Detect repository directory dynamically
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CFG_ROOT="$HOME/.config/MyI3Config"
 I3_DIR="$HOME/.config/i3"
 
-# Ask yes/no questions
+# ----------------------------
+# Functions
+# ----------------------------
+
+# Ask yes/no question
 ask() {
     printf "%s [y/N]: " "$1"
     read -r ans
     [[ "$ans" =~ ^[Yy]$ ]]
 }
 
-# Ask for application command, verify exists in PATH
+# Ask for application and verify it exists in PATH
 ask_app() {
     local label="$1"
     local default="$2"
@@ -33,6 +41,10 @@ ask_app() {
     done
 }
 
+# ----------------------------
+# Installer
+# ----------------------------
+
 echo "=== MyI3Config installer ==="
 echo
 
@@ -44,10 +56,18 @@ fi
 mkdir -p "$HOME/.config"
 mkdir -p "$I3_DIR"
 
+# ----------------------------
+# 1/4: Install packages
+# ----------------------------
 echo
 echo "[1/4] Installing packages..."
-sudo pacman -S --needed $(grep -v '^#' "$REPO_DIR/packages.txt")
+# Remove any packages that don't exist on Arch
+PACKAGES=$(grep -v '^#' "$REPO_DIR/packages.txt" | tr '\n' ' ')
+sudo pacman -S --needed $PACKAGES || true
 
+# ----------------------------
+# 2/4: Choose applications
+# ----------------------------
 echo
 echo "[2/4] Choose applications..."
 TERMINAL=$(ask_app "Terminal" "kitty")
@@ -55,12 +75,18 @@ BROWSER=$(ask_app "Browser" "firefox")
 FILEMANAGER=$(ask_app "File manager" "nautilus")
 CALCULATOR=$(ask_app "Calculator" "gnome-calculator")
 
+# ----------------------------
+# 3/4: Install config files
+# ----------------------------
 echo
 echo "[3/4] Installing MyI3Config..."
 rm -rf "$CFG_ROOT"
 mkdir -p "$CFG_ROOT"
 cp -r "$REPO_DIR/"* "$CFG_ROOT"
 
+# ----------------------------
+# 4/4: Write settings
+# ----------------------------
 echo
 echo "[4/4] Writing settings..."
 echo "$TERMINAL"    > "$CFG_ROOT/settings/terminal.sh"
@@ -70,11 +96,23 @@ echo "$CALCULATOR"  > "$CFG_ROOT/settings/calculator.sh"
 
 chmod +x "$CFG_ROOT/i3/"*.sh
 
+# ----------------------------
+# Copy i3 config to ~/.config/i3/config
+# ----------------------------
 echo
 echo "Installing i3 config → ~/.config/i3/config"
 mkdir -p "$I3_DIR"
-cp "$CFG_ROOT/i3/config" "$I3_DIR/config"
 
+if [ -f "$CFG_ROOT/i3/config/config" ]; then
+    cp "$CFG_ROOT/i3/config/config" "$I3_DIR/config"
+else
+    echo "Error: i3 config file not found in $CFG_ROOT/i3/config/"
+    exit 1
+fi
+
+# ----------------------------
+# Done
+# ----------------------------
 echo
 echo "✓ Done"
 echo
