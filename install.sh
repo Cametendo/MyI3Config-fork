@@ -99,14 +99,15 @@ echo "$CALCULATOR"  > "$CFG_ROOT/settings/calculator.sh"
 find "$CFG_ROOT/settings" -type f -name "*.sh" -exec chmod +x {} \;
 
 # ----------------------------
-# Copy i3 config to ~/.config/i3/config
+# Link i3 config to ~/.config/i3/config
 # ----------------------------
 echo
-echo "Installing i3 config → ~/.config/i3/config"
+echo "Linking i3 config → ~/.config/i3/config"
+
 mkdir -p "$I3_DIR"
 
 if [ -f "$CFG_ROOT/i3/config" ]; then
-    cp "$CFG_ROOT/i3/config" "$I3_DIR/config"
+    ln -sf "$CFG_ROOT/i3/config" "$I3_DIR/config"
 else
     echo "Error: i3 config file not found in $CFG_ROOT/i3/"
     exit 1
