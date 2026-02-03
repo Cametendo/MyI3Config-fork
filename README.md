@@ -68,7 +68,7 @@ If an application does not exist on the system, the installer will warn the user
 
 ```bash
 git clone https://github.com/JGH0/MyI3Config.git
-cd MyI3Repo
+cd MyI3Config
 ```
 
 ---
