@@ -28,6 +28,9 @@ bindsym $mod+t floating toggle
 bindsym $mod+j split toggle
 bindsym $mod+m fullscreen toggle
 
+# visual monitor arrangement tool
+bindsym $mod+p exec arandr
+
 # ----------------------------------------
 # Overlay power menu
 # ----------------------------------------
