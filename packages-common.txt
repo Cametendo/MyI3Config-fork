@@ -27,3 +27,6 @@ nautilus
 
 # Power menu
 wlogout
+
+# Clipboard
+clipmenu
