@@ -7,6 +7,7 @@ slurp
 
 # Clipboard (Wayland)
 wl-clipboard
+clipmenu
 
 # Lock screen (Wayland)
 swaylock
